@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_30_000000) do
-
+ActiveRecord::Schema[7.0].define(version: 2026_09_30_000000) do
   create_table "audits", force: :cascade do |t|
     t.integer "auditable_id"
     t.string "auditable_type"
@@ -21,7 +20,7 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.text "audited_changes"
     t.integer "version", default: 0
     t.text "comment"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.string "remote_address"
     t.string "username"
     t.string "request_uuid"
@@ -45,8 +44,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "country_code"
     t.string "bank_postal_address"
     t.integer "reimbursement_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "budgets", force: :cascade do |t|
@@ -54,8 +53,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "description"
     t.decimal "amount", precision: 10, scale: 2
     t.string "currency"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["currency"], name: "index_budgets_on_currency"
   end
 
@@ -64,8 +63,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "machine_type"
     t.text "body"
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "private"
     t.index ["private"], name: "index_comments_on_private"
   end
@@ -75,13 +74,13 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.integer "attempts", default: 0
     t.text "handler"
     t.text "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
+    t.datetime "run_at", precision: nil
+    t.datetime "locked_at", precision: nil
+    t.datetime "failed_at", precision: nil
     t.string "locked_by"
     t.string "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
@@ -91,8 +90,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.text "body"
     t.integer "user_id"
     t.integer "event_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "event_organizers", force: :cascade do |t|
@@ -108,11 +107,11 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.date "start_date"
     t.date "end_date"
     t.boolean "validated"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "visa_letters"
-    t.datetime "request_creation_deadline"
-    t.datetime "reimbursement_creation_deadline"
+    t.datetime "request_creation_deadline", precision: nil
+    t.datetime "reimbursement_creation_deadline", precision: nil
     t.integer "budget_id"
     t.string "shipment_type"
     t.index ["budget_id"], name: "index_events_on_budget_id"
@@ -130,8 +129,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "subject"
     t.text "notes"
     t.string "file"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "postal_addresses", force: :cascade do |t|
@@ -141,8 +140,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "postal_code"
     t.string "county"
     t.string "country_code"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "name"
   end
 
@@ -150,16 +149,16 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.integer "reimbursement_id"
     t.string "title", null: false
     t.string "file", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "reimbursement_links", force: :cascade do |t|
     t.integer "reimbursement_id"
     t.string "title", null: false
     t.string "url", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "reimbursements", force: :cascade do |t|
@@ -167,9 +166,9 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.integer "user_id", null: false
     t.integer "request_id", null: false
     t.text "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "state_updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.datetime "state_updated_at", precision: nil
     t.string "acceptance_file"
   end
 
@@ -181,8 +180,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "estimated_currency"
     t.decimal "approved_amount", precision: 10, scale: 2
     t.string "approved_currency"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.decimal "total_amount", precision: 10, scale: 2
     t.decimal "authorized_amount", precision: 10, scale: 2
   end
@@ -192,9 +191,9 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.integer "user_id", null: false
     t.integer "event_id", null: false
     t.text "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "state_updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.datetime "state_updated_at", precision: nil
     t.boolean "visa_letter"
     t.integer "postal_address_id"
     t.string "contact_phone_number"
@@ -213,8 +212,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "to", null: false
     t.integer "user_id"
     t.string "notes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "type"
     t.index ["type"], name: "index_state_changes_on_type"
   end
@@ -225,8 +224,8 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "full_name"
     t.string "phone_number"
     t.string "country_code"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "second_phone_number"
     t.string "description"
     t.string "location"
@@ -243,17 +242,17 @@ ActiveRecord::Schema.define(version: 2026_09_30_000000) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.string "nickname", null: false
     t.string "locale", default: "en", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.1.7', '>= 6.1.7.10'
+gem 'rails', '~> 7.0.10'
 gem 'rails-i18n', '~> 7.0'
 gem 'responders'
 
@@ -17,8 +17,8 @@ gem 'psych', '< 4.0'
 gem 'sass-rails'
 # Bootstrap ui framework
 gem 'bootstrap-sass'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier'
+# Compress modern JavaScript supplied by Rails and the asset pipeline.
+gem 'terser'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails'
 # Use jquery as the JavaScript library
@@ -90,6 +90,7 @@ end
 group :test do
   gem 'capybara'
   gem 'capybara-email'
+  gem 'capybara-lockstep'
   gem 'database_cleaner'
   gem 'pdf-reader'
   gem 'selenium-webdriver', '< 5.0'

@@ -37,7 +37,7 @@ RSpec.configure do |config|
   config.expect_with(:rspec) { |expectations| expectations.syntax = %i[should expect] }
 
   Capybara.register_driver :headless do |app|
-    options = Selenium::WebDriver::Chrome::Options.new
+    options = Selenium::WebDriver::Chrome::Options.new(unhandled_prompt_behavior: 'ignore')
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')

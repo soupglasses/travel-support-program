@@ -17,7 +17,7 @@ Bundler.require(*Rails.groups)
 
 module TravelSupport
   class Application < Rails::Application
-    config.load_defaults 6.1
+    config.load_defaults 7.0
     config.force_ssl = !Rails.env.test? && !Rails.env.development?
 
     # Historical audit YAML contains monetary values and zoned timestamps.
@@ -68,6 +68,6 @@ module TravelSupport
     config.assets.enabled = true
 
     # The configuration file for the application
-    config.site = config_for(:site).deep_stringify_keys
+    config.site = config_for(:site).to_h.deep_stringify_keys
   end
 end
