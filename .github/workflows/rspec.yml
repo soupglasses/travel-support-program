@@ -12,7 +12,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: ruby:3.1.7-slim-bookworm
+    container: ruby:3.4.10-slim-bookworm
     env:
       RAILS_ENV: test
       DATABASE_URL: sqlite3:/dev/shm/tsp-test.sqlite3
@@ -26,8 +26,8 @@ jobs:
       - name: Install system dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends build-essential git libpq-dev libsqlite3-dev default-libmysqlclient-dev libffi-dev libyaml-dev libxml2-dev libxslt1-dev chromium chromium-driver graphviz
-          gem install bundler --version 2.5.23 --no-document
+          apt-get install -y --no-install-recommends build-essential pkg-config git libpq-dev libsqlite3-dev default-libmysqlclient-dev libffi-dev libyaml-dev libxml2-dev libxslt1-dev chromium chromium-driver graphviz
+          gem install bundler --version 2.6.9 --no-document
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -35,7 +35,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: vendor/bundle
-          key: ruby-3.1.7-bookworm-${{ runner.arch }}-${{ hashFiles('Gemfile.lock') }}
+          key: ruby-3.4.10-bookworm-${{ runner.arch }}-${{ hashFiles('Gemfile.lock') }}
       - name: Install Ruby dependencies
         run: bundle install --jobs=3 --retry=3
       - name: Set up the environment

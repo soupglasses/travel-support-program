@@ -191,8 +191,7 @@ class Reimbursement < ApplicationRecord
 
     # Aggregate all the messages
     send(event)
-    error_msgs = errors.messages
-    error_msgs.delete_if { |key, _v| except.include?(key) }
+    error_msgs = errors.messages.except(*except)
     full_messages = []
     error_msgs.each_pair do |attrib, err|
       err.each { |msg| full_messages << errors.full_message(attrib, msg) }

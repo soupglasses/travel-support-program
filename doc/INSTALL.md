@@ -4,18 +4,21 @@ All the Information you need to Install TSP. If you face any issues with install
 
 ## Getting Started
 
+Install Ruby and Bundler as specified in `Gemfile` and `Gemfile.lock`, Node.js
+for assets, and the native libraries required by the gems. For a ready-made
+development environment, see [Docker setup](DOCKER.md).
+
 As most regular Ruby on Rails applications:
 
 ```
 $ git clone https://github.com/openSUSE/travel-support-program
 $ cd travel-support-program
-$ vi Gemfile # edit Gemfile to uncomment your favorite database driver
-$ bundle
+$ bundle install
 $ cp config/database.example.yml config/database.yml
 $ cp config/site.example.yml config/site.yml
 $ vi config/site.yml # edit configuration DON'T FORGET to set proper secrets
-$ rake db:create db:migrate db:seed
-$ rails s
+$ bundle exec rake db:create db:migrate db:seed
+$ bundle exec rails s
 ```
 
 You can access the application pointing your browser to <http://localhost:3000/>

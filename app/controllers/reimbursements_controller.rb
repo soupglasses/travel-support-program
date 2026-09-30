@@ -74,9 +74,12 @@ class ReimbursementsController < ApplicationController
     if c_template.blank? || c_layout.blank?
       redirect_to request_reimbursement_path(@reimbursement.request)
     else
-      @template = Rails.root.join('config', c_template)
-      @layout = Rails.root.join('config', c_layout)
-      @fields = YAML.load_file(@layout)
+      template = Rails.root.join('config', c_template)
+      layout = YAML.safe_load_file(Rails.root.join('config', c_layout), aliases: true)
+      pdf = CheckRequestPdf.render(template: template, layout: layout) do |name|
+        helpers.check_request_value(@reimbursement, name)
+      end
+      send_data pdf, type: 'application/pdf', disposition: 'inline', filename: 'check_request.pdf'
     end
   end
 
