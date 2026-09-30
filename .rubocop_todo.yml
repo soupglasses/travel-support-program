@@ -700,6 +700,28 @@ Rails/SkipsModelValidations:
     - 'spec/models/reimbursement_spec.rb'
     - 'spec/models/travel_sponsorship_spec.rb'
 
+# Offense count: 31
+# This cop supports unsafe autocorrection (--autocorrect-all).
+Rails/StrongParametersExpect:
+  Exclude:
+    - 'app/controllers/application_controller.rb'
+    - 'app/controllers/budgets_controller.rb'
+    - 'app/controllers/event_emails_controller.rb'
+    - 'app/controllers/event_organizers_controller.rb'
+    - 'app/controllers/events_controller.rb'
+    - 'app/controllers/expenses_approvals_controller.rb'
+    - 'app/controllers/payments_controller.rb'
+    - 'app/controllers/registrations_controller.rb'
+    - 'app/controllers/reimbursement_acceptances_controller.rb'
+    - 'app/controllers/reimbursement_attachments_controller.rb'
+    - 'app/controllers/reimbursements_controller.rb'
+    - 'app/controllers/requests_controller.rb'
+    - 'app/controllers/shipments_controller.rb'
+    - 'app/controllers/state_adjustments_controller.rb'
+    - 'app/controllers/state_transitions_controller.rb'
+    - 'app/controllers/travel_sponsorships_controller.rb'
+    - 'app/controllers/user_profiles_controller.rb'
+
 # Offense count: 4
 Rails/ThreeStateBooleanColumn:
   Exclude:

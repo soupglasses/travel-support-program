@@ -4,9 +4,11 @@ source 'https://rubygems.org'
 
 ruby '>= 3.2.0'
 
-gem 'rails', '~> 7.2.3', '>= 7.2.3.1'
-gem 'rails-i18n', '~> 7.0'
+gem 'rails', '~> 8.0.5', '>= 8.0.5.1'
+gem 'rails-i18n', '~> 8.0'
 gem 'responders'
+# Rails 8.0 still passes the quirks_mode option removed by JSON 3.
+gem 'json', '< 3'
 
 # Choose your weapon
 gem 'pg', '~> 1.6'
@@ -68,7 +70,7 @@ gem 'delayed_job_active_record'
 
 gem 'exception_notification', group: :production
 gem 'redcarpet'
-gem 'rspec-rails', '~> 6.1', group: %i[development test]
+gem 'rspec-rails', '~> 8.0', group: %i[development test]
 gem 'simplecov', require: false
 gem 'simplecov-lcov', require: false
 
