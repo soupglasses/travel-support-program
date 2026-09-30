@@ -716,7 +716,7 @@ Style/StringConcatenation:
     - 'app/controllers/state_transitions_controller.rb'
     - 'app/helpers/application_helper.rb'
 
-# Offense count: 44
+# Offense count: 45
 # This cop supports safe auto-correction (--auto-correct).
 # Configuration parameters: Max, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, IgnoredPatterns.
 # URISchemes: http, https
@@ -733,6 +733,7 @@ Layout/LineLength:
     - 'app/helpers/reimbursements_helper.rb'
     - 'app/helpers/requests_helper.rb'
     - 'app/inputs/dpicker_input.rb'
+    - 'app/models/application_record.rb'
     - 'app/models/bank_account.rb'
     - 'app/models/concerns/has_state.rb'
     - 'app/models/event_organizer.rb'

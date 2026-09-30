@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 7.0.10'
+gem 'rails', '~> 7.1.6'
 gem 'rails-i18n', '~> 7.0'
 gem 'responders'
 
@@ -60,7 +60,7 @@ gem 'kaminari'
 gem 'prawn', '~> 0.13.0'
 gem 'prawn_rails'
 gem 'puma'
-gem 'ransack', '~> 3.2'
+gem 'ransack', '>= 4.3'
 gem 'show_for'
 gem 'simple_form', '~> 5.3'
 gem 'state_machines-activerecord'
@@ -69,7 +69,7 @@ gem 'delayed_job_active_record'
 
 gem 'exception_notification', group: :production
 gem 'redcarpet'
-gem 'rspec-rails', group: %i[development test]
+gem 'rspec-rails', '~> 6.1', group: %i[development test]
 gem 'simplecov', require: false
 gem 'simplecov-lcov', require: false
 
@@ -91,7 +91,7 @@ group :test do
   gem 'capybara'
   gem 'capybara-email'
   gem 'capybara-lockstep'
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record'
   gem 'pdf-reader'
   gem 'selenium-webdriver', '< 5.0'
   gem 'shoulda-matchers'
