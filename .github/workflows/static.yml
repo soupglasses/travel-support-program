@@ -23,29 +23,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libpq-dev libsqlite3-dev default-libmysqlclient-dev libffi-dev libyaml-dev graphviz
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7'
+          ruby-version: '2.7.8'
 
       - name: Install dependencies
         run: |
-          gem install mini_racer -v 0.6.3
           bundler install
           cp config/site.example.yml config/site.yml
 
       - name: Build documentation
+        env:
+          RAILS_ENV: development
         run: bundler exec rake doc:html
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './doc/html'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

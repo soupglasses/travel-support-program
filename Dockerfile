@@ -1,12 +1,13 @@
 FROM registry.opensuse.org/opensuse/infrastructure/tsp/containers/base:main
-ARG CONTAINER_USERID
+ARG CONTAINER_USERID=1000
 
 # Configure our user
 RUN usermod -u $CONTAINER_USERID tsp
 
 WORKDIR /app
 
-RUN gem.ruby2.7 install mini_racer -v 0.6.3
+RUN zypper modifyrepo --disable ruby && \
+    zypper --non-interactive install nodejs libffi-devel libyaml-devel postgresql-devel postgresql-server-devel
 RUN gem.ruby2.7 install ffi -v '1.15.5'
 
 # Configure our bundle
@@ -27,4 +28,4 @@ RUN chown -R tsp /app
 # builds this container
 USER tsp
 
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["bundler.ruby2.7", "exec", "rails", "server", "-b", "0.0.0.0"]

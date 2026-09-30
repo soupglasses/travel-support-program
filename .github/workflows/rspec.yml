@@ -15,19 +15,24 @@ jobs:
     container: registry.opensuse.org/opensuse/infrastructure/tsp/containers/base:main
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v5
 
     - name: Cache ruby dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
-        path: |
-          /usr/lib64/ruby/gems/
-          /usr/bin/
-        key: ${{ hashFiles('Gemfile.lock') }}
+        path: vendor/bundle
+        key: ruby-2.7-linux-${{ hashFiles('Gemfile.lock') }}
 
     - name: Install ruby dependencies
       run: |
-        gem.ruby2.7 install mini_racer -v 0.6.3
+        # The archived Ruby repository no longer publishes Leap 15.4 metadata.
+        zypper modifyrepo --disable ruby
+        zypper --non-interactive install nodejs libffi-devel libyaml-devel postgresql-devel postgresql-server-devel
+        bundler.ruby2.7 config set path vendor/bundle
+        bundler.ruby2.7 config set build.ffi --enable-system-libffi
+        bundler.ruby2.7 config set build.nokogiri --use-system-libraries
+        bundler.ruby2.7 config set build.sassc --disable-march-tune-native
+        bundler.ruby2.7 config set build.nio4r --with-cflags=-Wno-return-type
         bundler.ruby2.7 install
 
     - name: Set up the environment

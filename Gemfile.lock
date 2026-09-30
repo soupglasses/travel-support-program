@@ -182,7 +182,6 @@ GEM
       actionmailer (>= 3.2)
       letter_opener (~> 1.0)
       railties (>= 3.2)
-    libv8-node (16.10.0.0)
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -197,8 +196,6 @@ GEM
     mini_magick (4.12.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.2)
-    mini_racer (0.6.3)
-      libv8-node (~> 16.10.0.0)
     minitest (5.18.1)
     nio4r (2.5.9)
     nokogiri (1.15.2)
@@ -426,7 +423,6 @@ DEPENDENCIES
   letter_opener_web
   listen
   mail (< 2.8.0)
-  mini_racer
   pdf-reader
   pg (~> 0.21)
   prawn (~> 0.13.0)

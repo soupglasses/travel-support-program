@@ -7,8 +7,8 @@ gem 'rails-i18n'
 gem 'responders'
 
 # Choose your weapon
-gem 'sqlite3', '~> 1.6.1'
 gem 'pg', '~> 0.21'
+gem 'sqlite3', '~> 1.6.1'
 # gem 'mysql2', '~> 0.4.10'
 
 # This can only be removed with Rails 7.0
@@ -28,8 +28,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 # HAML as default
 gem 'haml-rails'
-# mini_racer for execjs
-gem 'mini_racer'
+# ExecJS uses Node.js, avoiding a platform-specific embedded V8 build.
 
 # To test email with letter opener set the 'async_emails' option in site.yml to false
 gem 'letter_opener_web'

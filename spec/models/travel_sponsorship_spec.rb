@@ -34,11 +34,7 @@ describe TravelSponsorship do
 
     it 'is updated for on state changes' do
       request.expenses.create(subject: 'Lodging', estimated_amount: 10, estimated_currency: 'USD')
-      begin
-        transition(request, :submit, users(:wedge))
-      rescue
-        nil
-      end
+      transition(request, :submit, users(:wedge))
       request.reload.state.should == 'submitted'
       request.reload.state_updated_at.should_not be_nil
     end
@@ -94,7 +90,7 @@ describe TravelSponsorship do
   context 'when initially submitted' do
     let!(:deliveries) { ActionMailer::Base.deliveries.size }
     let(:request) { requests(:luke_for_party) }
-    let(:audits) { request.audits }
+    let!(:audit_count) { request.audits.count }
 
     context 'when expenses are incomplete' do
       before do
@@ -125,7 +121,7 @@ describe TravelSponsorship do
       end
 
       it 'audits the change' do
-        request.audits.size == audits.size + 1
+        request.audits.reload.size.should == audit_count + 1
       end
 
       it 'creates an state transition' do
@@ -194,29 +190,17 @@ describe TravelSponsorship do
       reimb = reimbursements(:wedge_for_training_reim)
       reimb.expenses.first.update_attribute(:authorized_amount, 20) # 10 EUR less than the approved amount
       expense.update_attributes(approved_amount: 50, approved_currency: 'EUR')
-      begin
-        transition(request, :approve, users(:tspmember))
-      rescue
-        nil
-      end
+      transition(request, :approve, users(:tspmember))
       request.reload.state.should == 'approved'
     end
 
     it 'ignores requests with canceled reimbursement' do
       reimb = reimbursements(:wedge_for_training_reim)
       reimb.expenses.first.update_attribute(:authorized_amount, 30)
-      begin
-        transition(reimb, :cancel, users(:wedge))
-      rescue
-        nil
-      end
+      transition(reimb, :cancel, users(:wedge))
       reimb.reload.state.should == 'canceled'
       expense.update_attributes(approved_amount: 70, approved_currency: 'EUR')
-      begin
-        transition(request, :approve, users(:tspmember))
-      rescue
-        nil
-      end
+      transition(request, :approve, users(:tspmember))
       request.reload.state.should == 'approved'
     end
 
