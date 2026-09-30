@@ -22,10 +22,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     env:
-      BUNDLE_BUILD__FFI: --enable-system-libffi
-      BUNDLE_BUILD__NOKOGIRI: --use-system-libraries
       BUNDLE_BUILD__SASSC: --disable-march-tune-native
-      BUNDLE_BUILD__NIO4R: --with-cflags=-Wno-return-type
     steps:
       - name: Checkout
         uses: actions/checkout@v5

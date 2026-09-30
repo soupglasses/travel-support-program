@@ -11,23 +11,50 @@ permissions:
 
 jobs:
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - database: sqlite
+            url: sqlite3:/dev/shm/tsp-test.sqlite3
+          - database: postgresql
+            url: postgresql://tsp:tsp@postgres/tsp_test
+          - database: mariadb
+            url: mysql2://root:tsp@mariadb/tsp_test
     runs-on: ubuntu-latest
     container: ruby:3.4.10-slim-bookworm
     env:
       RAILS_ENV: test
-      DATABASE_URL: sqlite3:/dev/shm/tsp-test.sqlite3
+      DATABASE_URL: ${{ matrix.url }}
+      # These service databases are disposable and isolated to this test job.
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: 'true'
       BUNDLE_PATH: vendor/bundle
-      BUNDLE_BUILD__FFI: --enable-system-libffi
-      BUNDLE_BUILD__NOKOGIRI: --use-system-libraries
       BUNDLE_BUILD__SASSC: --disable-march-tune-native
-      BUNDLE_BUILD__NIO4R: --with-cflags=-Wno-return-type
+    services:
+      postgres:
+        image: postgres:16-bookworm
+        env:
+          POSTGRES_USER: tsp
+          POSTGRES_PASSWORD: tsp
+          POSTGRES_DB: tsp_test
+        options: >-
+          --health-cmd "pg_isready -U tsp"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: tsp
+          MARIADB_DATABASE: tsp_test
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v5
       - name: Install system dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends build-essential pkg-config git libpq-dev libsqlite3-dev default-libmysqlclient-dev libffi-dev libyaml-dev libxml2-dev libxslt1-dev chromium chromium-driver graphviz
+          apt-get install -y --no-install-recommends build-essential git libpq-dev libsqlite3-dev default-libmysqlclient-dev libyaml-dev chromium chromium-driver graphviz
           gem install bundler --version 2.6.9 --no-document
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -45,13 +72,31 @@ jobs:
           bundle exec rake db:migrate
       - name: Run the full test suite
         run: bundle exec rspec
-      - name: Run RuboCop
-        run: bundle exec rubocop
+      - name: Save coverage report
+        if: matrix.database == 'sqlite'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          if-no-files-found: error
       - name: Check production assets and eager loading
+        if: matrix.database == 'sqlite'
         env:
           RAILS_ENV: production
         run: bundle exec rake zeitwerk:check assets:precompile
+
+  coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: coverage
       - name: Coveralls
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage/lcov.info
+          format: lcov

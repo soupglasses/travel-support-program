@@ -29,6 +29,22 @@ Four initial users should be available with the following emails and passwords:
 * administrative@example.com / administrative1
 * assistant@example.com / assistant1
 
+## Updating an existing installation
+
+Back up the database and uploaded files. Drain queued email jobs with the old
+worker before stopping the application: serialized jobs may be incompatible
+with the new Rails version. Preserve the existing configuration and secrets.
+
+Install the required runtime, then run:
+
+```sh
+bundle install
+RAILS_ENV=production bundle exec rake db:migrate assets:precompile
+```
+
+Restart the application and workers. Do not seed an existing database. Framework
+upgrades may require users to sign in again.
+
 ## Sending Emails in Travel Support Program
 
 To send emails with travel support program you need to setup some external mail service. For example using the gmail smtp, just add the smtp settings using `config.action_mailer.smtp_settings` in the `environment` files.

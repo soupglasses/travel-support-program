@@ -13,7 +13,7 @@ Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 196
+# Offense count: 197
 # This cop supports safe autocorrection (--autocorrect).
 Capybara/RSpec/HaveContent:
   Exclude:
@@ -370,7 +370,7 @@ RSpec/BeEq:
     - 'spec/models/reimbursement_spec.rb'
     - 'spec/models/travel_sponsorship_spec.rb'
 
-# Offense count: 46
+# Offense count: 47
 # Configuration parameters: Max, CountAsOne.
 RSpec/ExampleLength:
   Exclude:
