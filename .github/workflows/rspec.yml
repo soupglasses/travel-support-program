@@ -2,59 +2,56 @@ name: Run Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        type: [coverage, features, helpers, mailer, models, rubocop]
+  test:
     runs-on: ubuntu-latest
-    container: registry.opensuse.org/opensuse/infrastructure/tsp/containers/base:main
-
+    container: ruby:3.1.7-slim-bookworm
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: sqlite3:/dev/shm/tsp-test.sqlite3
+      BUNDLE_PATH: vendor/bundle
+      BUNDLE_BUILD__FFI: --enable-system-libffi
+      BUNDLE_BUILD__NOKOGIRI: --use-system-libraries
+      BUNDLE_BUILD__SASSC: --disable-march-tune-native
+      BUNDLE_BUILD__NIO4R: --with-cflags=-Wno-return-type
     steps:
-    - uses: actions/checkout@v5
-
-    - name: Cache ruby dependencies
-      uses: actions/cache@v4
-      with:
-        path: vendor/bundle
-        key: ruby-2.7-linux-${{ hashFiles('Gemfile.lock') }}
-
-    - name: Install ruby dependencies
-      run: |
-        # The archived Ruby repository no longer publishes Leap 15.4 metadata.
-        zypper modifyrepo --disable ruby
-        zypper --non-interactive install nodejs libffi-devel libyaml-devel postgresql-devel postgresql-server-devel
-        bundler.ruby2.7 config set path vendor/bundle
-        bundler.ruby2.7 config set build.ffi --enable-system-libffi
-        bundler.ruby2.7 config set build.nokogiri --use-system-libraries
-        bundler.ruby2.7 config set build.sassc --disable-march-tune-native
-        bundler.ruby2.7 config set build.nio4r --with-cflags=-Wno-return-type
-        bundler.ruby2.7 install
-
-    - name: Set up the environment
-      run: |
-        cp config/database.test.yml config/database.yml
-        cp config/site.example.yml config/site.yml
-        bundler.ruby2.7 exec rake db:migrate RAILS_ENV=test
-
-    - if: ${{ matrix.type == 'rubocop' }}
-      name: Run rubocop
-      run: bundler.ruby2.7 exec rubocop
-
-    - if: ${{ contains(fromJson('["features", "helpers", "mailer", "models"]'), matrix.type) }}
-      name: Run spec
-      run: bundler.ruby2.7 exec rspec spec/${{ matrix.type }}/
-
-    - if: ${{ matrix.type == 'coverage' }}
-      name: Run spec
-      run: bundler.ruby2.7 exec rspec
-
-    - if: ${{ matrix.type == 'coverage' }}
-      name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v5
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends build-essential git libpq-dev libsqlite3-dev default-libmysqlclient-dev libffi-dev libyaml-dev libxml2-dev libxslt1-dev chromium chromium-driver graphviz
+          gem install bundler --version 2.5.23 --no-document
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Cache Ruby dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: ruby-3.1.7-bookworm-${{ runner.arch }}-${{ hashFiles('Gemfile.lock') }}
+      - name: Install Ruby dependencies
+        run: bundle install --jobs=3 --retry=3
+      - name: Set up the environment
+        run: |
+          cp config/database.test.yml config/database.yml
+          cp config/site.example.yml config/site.yml
+          bundle exec rake db:migrate
+      - name: Run the full test suite
+        run: bundle exec rspec
+      - name: Run RuboCop
+        run: bundle exec rubocop
+      - name: Check production assets and eager loading
+        env:
+          RAILS_ENV: production
+        run: bundle exec rake zeitwerk:check assets:precompile
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

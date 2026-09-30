@@ -1,31 +1,32 @@
-FROM registry.opensuse.org/opensuse/infrastructure/tsp/containers/base:main
+FROM node:24-bookworm-slim AS node
+FROM ruby:3.1.7-slim-bookworm
+
 ARG CONTAINER_USERID=1000
+ARG APP_VERSION=0.0.0
 
-# Configure our user
-RUN usermod -u $CONTAINER_USERID tsp
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential git libpq-dev libsqlite3-dev default-libmysqlclient-dev \
+    libffi-dev libyaml-dev libxml2-dev libxslt1-dev chromium chromium-driver graphviz \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
 
+RUN groupadd --gid 1000 tsp \
+    && useradd --uid "$CONTAINER_USERID" --gid tsp --create-home tsp \
+    && gem install bundler --version 2.5.23 --no-document
+
+ENV BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BUILD__FFI=--enable-system-libffi \
+    BUNDLE_BUILD__NOKOGIRI=--use-system-libraries \
+    BUNDLE_BUILD__NIO4R=--with-cflags=-Wno-return-type \
+    BUNDLE_BUILD__SASSC=--disable-march-tune-native
 WORKDIR /app
+COPY Gemfile Gemfile.lock ./
+RUN bundle install --jobs=3 --retry=3
 
-RUN zypper modifyrepo --disable ruby && \
-    zypper --non-interactive install nodejs libffi-devel libyaml-devel postgresql-devel postgresql-server-devel
-RUN gem.ruby2.7 install ffi -v '1.15.5'
-
-# Configure our bundle
-# ENV BUNDLE_FORCE_RUBY_PLATFORM=true
-RUN bundler.ruby2.7  config build.ffi --enable-system-libffi; \
-    bundler.ruby2.7  config build.nokogiri --use-system-libraries; \
-    bundler.ruby2.7  config build.sassc --disable-march-tune-native; \
-    bundler.ruby2.7  config build.nio4r --with-cflags='-Wno-return-type'
-
-ADD Gemfile /app/Gemfile
-ADD Gemfile.lock /app/Gemfile.lock
-
-RUN bundler.ruby2.7 install --jobs=3 --retry=3
-
-RUN chown -R tsp /app
-
-# Now do the rest as the user with the same ID as the user who
-# builds this container
+COPY --chown=tsp:tsp . .
+RUN chown tsp:tsp /app
 USER tsp
+RUN printf '%s\n' "$APP_VERSION" > VERSION
 
-CMD ["bundler.ruby2.7", "exec", "rails", "server", "-b", "0.0.0.0"]
+EXPOSE 3000
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

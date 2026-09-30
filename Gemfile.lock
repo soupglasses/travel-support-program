@@ -66,7 +66,7 @@ GEM
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
     afm (0.2.2)
-    ast (2.4.2)
+    ast (2.4.3)
     audited (5.3.3)
       activerecord (>= 5.0, < 7.1)
       request_store (~> 1.2)
@@ -132,6 +132,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
+    date (3.5.1)
     date_validator (0.12.0)
       activemodel (>= 3)
       activesupport (>= 3)
@@ -177,7 +178,6 @@ GEM
     image_processing (1.12.2)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
-    jaro_winkler (1.5.4)
     jquery-rails (4.5.1)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -207,11 +207,16 @@ GEM
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    logger (1.7.0)
     loofah (2.25.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    mail (2.7.1)
+    mail (2.9.1)
+      logger
       mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.1.0)
@@ -219,14 +224,24 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.8.2)
     minitest (5.26.1)
+    net-imap (0.5.15)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
+    net-protocol (0.4.0)
+      timeout
+    net-smtp (0.5.2)
+      net-protocol
     nio4r (2.5.9)
     nokogiri (1.15.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     orm_adapter (0.5.0)
-    parallel (1.22.1)
-    parser (3.2.0.0)
+    parallel (1.28.0)
+    parser (3.3.12.0)
       ast (~> 2.4.1)
+      racc
     pdf-reader (1.4.1)
       Ascii85 (~> 1.0.0)
       afm (~> 0.2.1)
@@ -241,6 +256,7 @@ GEM
     prawn_rails (0.0.12)
       prawn (>= 0.11.1)
       railties (>= 3.0.0)
+    prism (1.9.0)
     psych (3.3.4)
     public_suffix (5.0.1)
     puma (6.3.1)
@@ -315,21 +331,27 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.12.0)
-    rubocop (0.70.0)
-      jaro_winkler (~> 1.5.1)
+    rubocop (1.28.2)
       parallel (~> 1.10)
-      parser (>= 2.6)
+      parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.17.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 1.7)
-    rubocop-rails (2.0.1)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.50.0)
+      parser (>= 3.3.7.2)
+      prism (~> 1.7)
+    rubocop-rails (2.14.2)
+      activesupport (>= 4.2.0)
       rack (>= 1.1)
-      rubocop (>= 0.70.0)
-    rubocop-rspec (1.41.0)
-      rubocop (>= 0.68.1)
+      rubocop (>= 1.7.0, < 2.0)
+    rubocop-rspec (2.10.0)
+      rubocop (~> 1.19)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-progressbar (1.11.0)
+    ruby-progressbar (1.13.0)
     ruby-rc4 (0.1.5)
     ruby-vips (2.1.4)
       ffi (~> 1.12)
@@ -355,9 +377,9 @@ GEM
     show_for (0.7.0)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
-    simple_form (5.0.3)
-      actionpack (>= 5.0)
-      activemodel (>= 5.0)
+    simple_form (5.3.1)
+      actionpack (>= 5.2)
+      activemodel (>= 5.2)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -391,13 +413,14 @@ GEM
     temple (0.9.1)
     thor (1.2.1)
     tilt (2.0.11)
+    timeout (0.6.1)
     ttfunk (1.0.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unaccent (0.4.0)
-    unicode-display_width (1.6.1)
+    unicode-display_width (2.6.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     webrick (1.7.0)
@@ -445,7 +468,6 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   listen
-  mail (< 2.8.0)
   pdf-reader
   pg (~> 0.21)
   prawn (~> 0.13.0)
@@ -458,16 +480,16 @@ DEPENDENCIES
   redcarpet
   responders
   rspec-rails
-  rubocop (~> 0.70.0)
-  rubocop-rails
-  rubocop-rspec
+  rubocop (~> 1.28.0)
+  rubocop-rails (~> 2.14.0)
+  rubocop-rspec (~> 2.10.0)
   ruby-graphviz
   sass-rails
   sdoc
   selenium-webdriver (< 5.0)
   shoulda-matchers
   show_for
-  simple_form
+  simple_form (~> 5.3)
   simplecov
   simplecov-lcov
   sqlite3 (~> 1.6.1)
@@ -478,4 +500,4 @@ DEPENDENCIES
   yard-activerecord
 
 BUNDLED WITH
-   2.1.4
+   2.5.23

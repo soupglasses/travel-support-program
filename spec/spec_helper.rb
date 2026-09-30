@@ -42,7 +42,8 @@ RSpec.configure do |config|
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')
 
-    options.add_preference(:download, default_directory: 'tmp/downloads/', directory_upgrade: true)
+    options.add_preference(:download, default_directory: Rails.root.join('tmp/downloads').to_s, directory_upgrade: true)
+    options.add_preference(:plugins, always_open_pdf_externally: true)
     Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
   end
 

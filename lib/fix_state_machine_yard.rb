@@ -16,6 +16,15 @@ class StateMachine::YARD::Handlers::Base
       tsp_extract_node_name(ast)
     end
   end
+
+  alias tsp_extract_node_names extract_node_names
+
+  # Ruby 3's parser returns parameter lists as Arrays rather than YARD nodes.
+  def extract_node_names(ast, convert_to_array = true) # rubocop:disable Style/OptionalBooleanParameter
+    return ast.map { |node| extract_node_name(node) } unless ast.respond_to?(:type)
+
+    tsp_extract_node_names(ast, convert_to_array)
+  end
 end
 
 class StateMachine::YARD::Handlers::Transition

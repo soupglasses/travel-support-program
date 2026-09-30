@@ -11,8 +11,6 @@ gem 'pg', '~> 0.21'
 gem 'sqlite3', '~> 1.6.1'
 # gem 'mysql2', '~> 0.4.10'
 
-# This can only be removed with Rails 7.0
-gem 'mail', '< 2.8.0'
 gem 'psych', '< 4.0'
 
 # Use SCSS for stylesheets
@@ -64,7 +62,7 @@ gem 'prawn_rails'
 gem 'puma'
 gem 'ransack', '~> 3.2'
 gem 'show_for'
-gem 'simple_form'
+gem 'simple_form', '~> 5.3'
 gem 'state_machines-activerecord'
 # delayed_job must appear after protected_attributes
 gem 'delayed_job_active_record'
@@ -84,9 +82,9 @@ group :development do
   gem 'state_machines-yard'
   gem 'yard-activerecord'
   # for static code analisys
-  gem 'rubocop', '~> 0.70.0', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rspec', require: false
+  gem 'rubocop', '~> 1.28.0', require: false
+  gem 'rubocop-rails', '~> 2.14.0', require: false
+  gem 'rubocop-rspec', '~> 2.10.0', require: false
 end
 
 group :test do

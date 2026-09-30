@@ -21,6 +21,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_BUILD__FFI: --enable-system-libffi
+      BUNDLE_BUILD__NOKOGIRI: --use-system-libraries
+      BUNDLE_BUILD__SASSC: --disable-march-tune-native
+      BUNDLE_BUILD__NIO4R: --with-cflags=-Wno-return-type
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -31,25 +36,30 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libpq-dev libsqlite3-dev default-libmysqlclient-dev libffi-dev libyaml-dev graphviz
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+          sudo apt-get install -y build-essential libpq-dev libsqlite3-dev default-libmysqlclient-dev libffi-dev libyaml-dev libxml2-dev libxslt1-dev graphviz
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7.8'
+          ruby-version: '3.1.7'
+          bundler-cache: true
 
-      - name: Install dependencies
-        run: |
-          bundler install
-          cp config/site.example.yml config/site.yml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Configure the application
+        run: cp config/site.example.yml config/site.yml
 
       - name: Build documentation
         env:
           RAILS_ENV: development
-        run: bundler exec rake doc:html
+        run: |
+          bundle exec rake doc:html 2>&1 | tee /tmp/tsp-documentation.log
+          if grep -q '\[error\]' /tmp/tsp-documentation.log; then exit 1; fi
+          for model in TravelSponsorship Shipment Reimbursement; do
+            test -s "doc/html/${model}_state.png"
+            cmp "doc/html/${model}_state.png" "app/assets/images/${model}_state.png"
+          done
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
