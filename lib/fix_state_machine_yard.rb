@@ -2,7 +2,10 @@
 
 require 'state_machines/graphviz'
 
-class StateMachine::YARD::Handlers::Base
+# YARD embeds PNG files; the default renderer writes diagrams to standard output.
+StateMachines::Machine.renderer = StateMachines::Graphviz::Renderer
+
+class StateMachines::Yard::Handlers::Base
   alias tsp_extract_node_name extract_node_name
 
   def extract_node_name(ast)
@@ -19,15 +22,19 @@ class StateMachine::YARD::Handlers::Base
 
   alias tsp_extract_node_names extract_node_names
 
-  # Ruby 3's parser returns parameter lists as Arrays rather than YARD nodes.
+  # Keep the plugin's positional signature for its existing callers.
   def extract_node_names(ast, convert_to_array = true) # rubocop:disable Style/OptionalBooleanParameter
-    return ast.map { |node| extract_node_name(node) } unless ast.respond_to?(:type)
-
-    tsp_extract_node_names(ast, convert_to_array)
+    # YARD nodes inherit Array; literals must be interpreted before array contents.
+    if ast.respond_to?(:type) && %i[symbol_literal string_literal label].include?(ast.type)
+      name = extract_node_name(ast)
+      convert_to_array ? [name] : name
+    else
+      tsp_extract_node_names(ast, convert_to_array)
+    end
   end
 end
 
-class StateMachine::YARD::Handlers::Transition
+class StateMachines::Yard::Handlers::Transition
   def process
     return unless [StateMachines::Machine, StateMachines::Event, StateMachines::State].include?(owner.class)
 
@@ -60,7 +67,7 @@ class StateMachine::YARD::Handlers::Transition
   end
 end
 
-class StateMachine::YARD::Handlers::Machine
+class StateMachines::Yard::Handlers::Machine
   def integration
     @integration ||= StateMachines::Integrations.match_ancestors(namespace.inheritance_tree(true).map(&:path))
   end

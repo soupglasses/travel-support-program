@@ -14,7 +14,7 @@ SimpleCov.start 'rails' do
   formatter SimpleCov::Formatter::LcovFormatter
 
   # Not covered because they are overriden in spec/support/carrierwave.rb
-  add_filter 'app/uploaders/'
+  skip 'app/uploaders/'
 end
 
 ENV['RAILS_ENV'] ||= 'test'
@@ -79,11 +79,13 @@ RSpec.configure do |config|
   config.order = 'random'
 
   config.before do
+    clear_downloads
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
   end
 
   config.after do
+    clear_downloads
     DatabaseCleaner.clean
   end
 

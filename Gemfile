@@ -2,13 +2,11 @@
 
 source 'https://rubygems.org'
 
-ruby '>= 3.2.0'
+ruby '~> 3.4.0'
 
-gem 'rails', '~> 8.0.5', '>= 8.0.5.1'
+gem 'rails', '~> 8.1.4'
 gem 'rails-i18n', '~> 8.0'
 gem 'responders'
-# Rails 8.0 still passes the quirks_mode option removed by JSON 3.
-gem 'json', '< 3'
 
 # Choose your weapon
 gem 'pg', '~> 1.6'

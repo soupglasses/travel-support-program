@@ -17,7 +17,7 @@ Bundler.require(*Rails.groups)
 
 module TravelSupport
   class Application < Rails::Application
-    config.load_defaults 8.0
+    config.load_defaults 8.1
     config.force_ssl = !Rails.env.test? && !Rails.env.development?
 
     # Historical audit YAML contains monetary values and zoned timestamps.

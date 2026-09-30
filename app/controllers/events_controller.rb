@@ -28,8 +28,8 @@ class EventsController < ApplicationController
         format.html { redirect_to event_url(@event), notice: t(:event_create) }
         format.json { render :show, status: :created, location: @event }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_content }
+        format.json { render json: @event.errors, status: :unprocessable_content }
       end
     end
   end
@@ -42,8 +42,8 @@ class EventsController < ApplicationController
         format.html { redirect_to event_url(@event), notice: t(:event_update) }
         format.json { render :show, status: :updated, location: @event }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_content }
+        format.json { render json: @event.errors, status: :unprocessable_content }
       end
     end
   end
