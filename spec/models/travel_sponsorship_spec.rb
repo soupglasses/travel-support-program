@@ -8,6 +8,16 @@ describe TravelSponsorship do
 
   fixtures :all
 
+  it 'saves an association-built transition once with its original state', :aggregate_failures do
+    request = requests(:luke_for_party)
+    transition_record = request.transitions.build(state_event: 'submit', user: users(:luke))
+
+    expect { transition_record.save! }.to change { request.transitions.count }.by(1)
+    expect(request.reload.state).to eq('submitted')
+    expect(transition_record.reload.from).to eq('incomplete')
+    expect(transition_record.to).to eq('submitted')
+  end
+
   describe '#visa_letter_allowed?' do
     it 'is false for default events' do
       requests(:wedge_for_party).should_not be_visa_letter_allowed

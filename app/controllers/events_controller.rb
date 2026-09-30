@@ -63,7 +63,7 @@ class EventsController < ApplicationController
       { label: @event.name, url: event_path(@event) },
       { label: 'participants' }
     ]
-    @requests = @event.travel_sponsorships.eager_load(:user).order('lower(users.nickname)').accessible_by(current_ability)
+    @requests = @event.travel_sponsorships.eager_load(:user).order(Arel.sql('lower(users.nickname)')).accessible_by(current_ability)
     @requests.distinct!(&:user_id)
   end
 

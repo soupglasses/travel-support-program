@@ -11,6 +11,12 @@ module TravelSupport
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
+    # Historical audit YAML contains monetary values and zoned timestamps.
+    # Keep safe loading enabled and permit only the types stored by the app.
+    config.active_record.yaml_column_permitted_classes = [
+      Symbol, Date, Time, BigDecimal, ActiveSupport::TimeWithZone, ActiveSupport::TimeZone
+    ]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

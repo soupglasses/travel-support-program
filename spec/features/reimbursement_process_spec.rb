@@ -39,7 +39,7 @@ feature 'Reimbursements', '' do
     click_button 'submit'
     page.should have_content 'Something went wrong. Unable to submit.'
     page.should have_content 'under modification, not submitted'
-    page.should have_content 'expenses are missing or invalid'
+    page.should have_content(/expenses are missing or invalid/i)
 
     # Correct the request
     close_modal_dialog
