@@ -285,7 +285,7 @@ RSpec/Capybara/FeatureMethods:
     - 'spec/features/user_registration_spec.rb'
     - 'spec/features/visa_letter_spec.rb'
 
-# Offense count: 43
+# Offense count: 44
 # Configuration parameters: Max, CountAsOne.
 RSpec/ExampleLength:
   Exclude:
@@ -306,6 +306,7 @@ RSpec/ExampleLength:
     - 'spec/features/user_profile_spec.rb'
     - 'spec/features/user_registration_spec.rb'
     - 'spec/features/visa_letter_spec.rb'
+    - 'spec/models/application_mailer_spec.rb'
     - 'spec/models/normalize_sqlite_booleans_spec.rb'
     - 'spec/models/reimbursement_spec.rb'
     - 'spec/models/shipment_spec.rb'
