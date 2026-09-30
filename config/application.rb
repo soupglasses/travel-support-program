@@ -10,6 +10,7 @@ module TravelSupport
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
+    config.force_ssl = !Rails.env.test? && !Rails.env.development?
 
     # Historical audit YAML contains monetary values and zoned timestamps.
     # Keep safe loading enabled and permit only the types stored by the app.
@@ -59,6 +60,6 @@ module TravelSupport
     config.assets.enabled = true
 
     # The configuration file for the application
-    config.site = config_for(:site)
+    config.site = config_for(:site).deep_stringify_keys
   end
 end
